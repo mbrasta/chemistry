@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>دنیای شیمی</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    :root {
+      --pink: #ec407a;
+      --light-pink: #fff0f5;
+      --dark-pink: #c2185b;
+      --accent: #ffd6e8;
+    }
+
+    body {
+      font-family: "Tahoma", sans-serif;
+      margin: 0;
+      background-color: var(--light-pink);
+      color: #333;
+      direction: rtl;
+      text-align: right;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    header {
+      background: linear-gradient(to left, #f06292, #ec407a);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      background: linear-gradient(to left, #fff, #ffd6e8);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #fff; }
+      to { text-shadow: 0 0 15px #ffd6e8; }
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 12px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      display: block;
+      width: 0;
+      height: 2px;
+      background: #fff;
+      transition: width 0.3s;
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    main {
+      padding: 40px 30px;
+    }
+
+    h1, h2, h3 {
+      color: var(--dark-pink);
+    }
+
+    .card-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 280px;
+      border-right: 5px solid var(--pink);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    img {
+      margin: 10px;
+      border-radius: 10px;
+      border: 2px solid #f48fb1;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    img:hover {
+      transform: scale(1.05);
+    }
+
+    #atom3d {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .atom {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+      perspective: 800px;
+    }
+
+    .nucleus {
+      width: 40px;
+      height: 40px;
+      background: var(--dark-pink);
+      border-radius: 50%;
+      position: absolute;
+      top: 80px;
+      left: 80px;
+      z-index: 10;
+    }
+
+    .orbit {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 1px dashed var(--pink);
+      border-radius: 50%;
+      animation: rotate 5s linear infinite;
+    }
+
+    .orbit1 { animation-duration: 5s; }
+    .orbit2 { animation-duration: 7s; transform: rotateX(60deg); }
+    .orbit3 { animation-duration: 9s; transform: rotateY(60deg); }
+
+    .electron {
+      width: 15px;
+      height: 15px;
+      background-color: #e91e63;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      left: 92.5px;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotateZ(0deg); }
+      100% { transform: rotateZ(360deg); }
+    }
+
+    footer {
+      background-color: var(--pink);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      margin-top: 60px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+
+    
+    section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .dark-mode-toggle {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      background: var(--dark-pink);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .dark-mode {
+      background-color: #222;
+      color: #eee;
+    }
+
+    .dark-mode header {
+      background: linear-gradient(to left, #7b1fa2, #512da8);
+    }
+
+    .dark-mode .card {
+      background-color: #2c2c2c;
+      color: #fff;
+      border-color: #9c27b0;
+    }
+
+    .dark-mode footer {
+      background-color: #6a1b9a;
+    }
+
+    input, select, button {
+      margin: 8px 0;
+      padding: 8px;
+      font-family: Tahoma;
+      font-size: 14px;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: var(--pink);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--dark-pink);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>به دنیای شیمی خوش آمدید</h1>
+    <nav>
+      <a href="#intro">مقدمه</a>
+      <a href="#topics">موضوعات</a>
+      <a href="#visual">تصویرسازی</a>
+      <a href="#atom3d">مدل اتم</a>
+      <a href="#exam">آزمون</a>
+    </nav>
+  </header>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>جدول تناوبی تعاملی</title>
+  <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      background-color: #f0f0f0;
+      direction: rtl;
+      text-align: right;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .periodic-table {
+      display: grid;
+      grid-template-columns: repeat(18, 50px);
+      grid-gap: 5px;
+      justify-content: center;
+      margin: 50px auto;
+    }
+    .element {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .element:hover {
+      transform: scale(1.1);
+      background-color: #e0e0e0;
+    }
+    .element-symbol {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .element-number {
+      font-size: 12px;
+    }
+    .element-name {
+      font-size: 14px;
+    }
+    .element-weight {
+      font-size: 12px;
+    }
+    .element-details {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border: 2px solid #ccc;
+      padding: 20px;
+      z-index: 1000;
+      width: 300px;
+    }
+    .element-details h2 {
+      margin-top: 0;
+    }
+    .close-btn {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #ccc;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>جدول تناوبی تعاملی</h1>
+
+  <div class="periodic-table" id="periodicTable">
+    <!-- عناصر جدول در اینجا اضافه می‌شوند -->
+  </div>
+
+  <div class="element-details" id="elementDetails">
+    <h2 id="detailName"></h2>
+    <p><strong>عدد اتمی:</strong> <span id="detailNumber"></span></p>
+    <p><strong>نماد:</strong> <span id="detailSymbol"></span></p>
+    <p><strong>جرم اتمی:</strong> <span id="detailWeight"></span></p>
+    <button class="close-btn" onclick="closeDetails()">بستن</button>
+  </div>
+
+  <script>
+    const elements = [
+      {number: 1, symbol: 'H', name: 'هیدروژن', weight: '1.008', xpos: 1, ypos: 1},
+      {number: 2, symbol: 'He', name: 'هلیوم', weight: '4.0026', xpos: 18, ypos: 1},
+      {number: 3, symbol: 'Li', name: 'لیتیم', weight: '6.94', xpos: 1, ypos: 2},
+      {number: 4, symbol: 'Be', name: 'بریلیم', weight: '9.0122', xpos: 2, ypos: 2},
+      {number: 5, symbol: 'B', name: 'بور', weight: '10.81', xpos: 13, ypos: 2},
+      {number: 6, symbol: 'C', name: 'کربن', weight: '12.011', xpos: 14, ypos: 2},
+      {number: 7, symbol: 'N', name: 'نیتروژن', weight: '14.007', xpos: 15, ypos: 2},
+      {number: 8, symbol: 'O', name: 'اکسیژن', weight: '15.999', xpos: 16, ypos: 2},
+      {number: 9, symbol: 'F', name: 'فلوئور', weight: '18.998', xpos: 17, ypos: 2},
+      {number: 10, symbol: 'Ne', name: 'نئون', weight: '20.180', xpos: 18, ypos: 2},
+      {number: 11, symbol: 'Na', name: 'سدیم', weight: '22.990', xpos: 1, ypos: 3},
+      {number: 12, symbol: 'Mg', name: 'منیزیم', weight: '24.305', xpos: 2, ypos: 3},
+      {number: 13, symbol: 'Al', name: 'آلومینیوم', weight: '26.982', xpos: 13, ypos: 3},
+      {number: 14, symbol: 'Si', name: 'سیلیکون', weight: '28.085', xpos: 14, ypos: 3},
+      {number: 15, symbol: 'P', name: 'فسفر', weight: '30.974', xpos: 15, ypos: 3},
+      {number: 16, symbol: 'S', name: 'گوگرد', weight: '32.065', xpos: 16, ypos: 3},
+      {number: 17, symbol: 'Cl', name: 'کلر', weight: '35.45', xpos: 17, ypos: 3},
+      {number: 18, symbol: 'Ar', name: 'آرگون', weight: '39.948', xpos: 18, ypos: 3},
+      {number: 19, symbol: 'K', name: 'پتاسیم', weight: '39.098', xpos: 1, ypos: 4},
+      {number: 20, symbol: 'Ca', name: 'کلسیم', weight: '40.078', xpos: 2, ypos: 4},
+      {number: 21, symbol: 'Sc', name: 'اسکاندیم', weight: '44.956', xpos: 3, ypos: 4},
+      {number: 22, symbol: 'Ti', name: 'تیتانیوم', weight: '47.867', xpos: 4, ypos: 4},
+      {number: 23, symbol: 'V', name: 'وانادیوم', weight: '50.942', xpos: 5, ypos: 4},
+      {number: 24, symbol: 'Cr', name: 'کروم', weight: '52.00', xpos: 6, ypos: 4},
+      {number: 25, symbol: 'Mn', name: 'منگنز', weight: '54.938', xpos: 7, ypos: 4},
+      {number: 26, symbol: 'Fe', name: 'آهن', weight: '55.845', xpos: 8, ypos: 4},
+      {number: 27, symbol: 'Co', name: 'کبالت', weight: '58.933', xpos: 9, ypos: 4},
+      {number: 28, symbol: 'Ni', name: 'نیکل', weight: '58.693', xpos: 10, ypos: 4},
+      {number: 29, symbol: 'Cu', name: 'مس', weight: '63.546', xpos: 11, ypos: 4},
+      {number: 30, symbol: 'Zn', name: 'روی', weight: '65.38', xpos: 12, ypos: 4},
+      {number: 31, symbol: 'Ga', name: 'گالیوم', weight: '69.723', xpos: 13, ypos: 4},
+      {number: 32, symbol: 'Ge', name: 'ژرمانیم', weight: '72.63', xpos: 14, ypos: 4},
+      {number: 33, symbol: 'As', name: 'آرسنیک', weight: '74.922', xpos: 15, ypos: 4},
+      {number: 34, symbol: 'Se', name: 'سلنیم', weight: '78.971', xpos: 16, ypos: 4},
+      {number: 35, symbol: 'Br', name: 'بروم', weight: '79.904', xpos: 17, ypos: 4},
+      {number: 36, symbol: 'Kr', name: 'کریپتون', weight: '83.798', xpos: 18, ypos: 4},
+    ];
+
+    const table = document.getElementById('periodicTable');
+
+    elements.forEach(el => {
+      const div = document.createElement('div');
+      div.className = 'element';
+      div.style.gridColumn = el.xpos;
+      div.style.gridRow = el.ypos;
+      div.innerHTML = `
+        <div class="element-number">${el.number}</div>
+        <div class="element-symbol">${el.symbol}</div>
+        <div class="element-name">${el.name}</div>
+        <div class="element-weight">${el.weight}</div>
+      `;
+      div.addEventListener('click', () => showDetails(el));
+      table.appendChild(div);
+    });
+
+    function showDetails(el) {
+      document.getElementById('detailName').textContent = el.name;
+      document.getElementById('detailNumber').textContent = el.number;
+      document.getElementById('detailSymbol').textContent = el.symbol;
+      document.getElementById('detailWeight').textContent = el.weight;
+      document.getElementById('elementDetails').style.display = 'block';
+    }
+
+    function closeDetails() {
+      document.getElementById('elementDetails').style.display = 'none';
+    }
+  </script>
+
+  
+
+  <main>
+    <section id="intro">
+      <h2>شیمی چیست؟</h2>
+      <p>شیمی علمی است که ساختار، خواص و تغییرات مواد را بررسی می‌کند. این علم به دسته‌های مختلفی تقسیم می‌شود که شامل شیمی آلی، شیمی معدنی، شیمی تجزیه، شیمی فیزیکی و شیمی بیولوژیکی است. شیمی نقش اساسی در پیشرفت علوم مختلف و تکنولوژی‌ها مانند داروسازی، مهندسی شیمی، محیط زیست، و انرژی دارد. به‌طور کلی، شیمی به‌عنوان علمی پایه‌ای و حیاتی درک نحوه تعاملات و تبدیل‌های ماده در دنیای پیرامون ما را ممکن می‌سازد.</p>
+    </section>
+
+    <section id="topics">
+      <h2>موضوعات کلیدی در شیمی</h2>
+      <div class="card-container">
+        <div class="card">
+          <h3>اتم‌ها</h3>
+          <p>اتم‌ها واحدهای اصلی سازنده‌ی ماده هستند. هر اتم از یک هسته مرکزی و الکترون‌هایی که در مدارهای خاصی به دور آن می‌چرخند تشکیل شده است. خواص شیمیایی مواد به‌طور مستقیم تحت تأثیر نحوه قرار گرفتن الکترون‌ها در اتم‌ها قرار دارد. مفاهیم نوین در شیمی، مانند نظریه کوانتومی، به‌طور عمده در مطالعه رفتار الکترون‌ها در اتم‌ها متمرکز است.</p>
+        </div>
+        <div class="card">
+          <h3>مولکول‌ها</h3>
+          <p>مولکول‌ها از اتصال دو یا چند اتم به‌وسیله پیوندهای شیمیایی تشکیل می‌شوند. این پیوندها می‌توانند کووالانسی (اشتراک الکترون‌ها) یا یونی (تبادل الکترون‌ها) باشند. ساختار و نوع پیوندهای شیمیایی در یک مولکول، خواص فیزیکی و شیمیایی آن را تعیین می‌کند. به‌عنوان مثال، مولکول آب (H2O) دارای پیوندهای هیدروژنی است که موجب خواص منحصر به‌فرد آن می‌شود.</p>
+        </div>
+        <div class="card">
+          <h3>جدول تناوبی</h3>
+          <p>جدول تناوبی مجموعه‌ای از عناصر شیمیایی است که بر اساس خواص شیمیایی و تعداد پروتون‌ها (عدد اتمی) در ستون‌ها و ردیف‌های خاصی مرتب شده‌اند. این جدول به‌طور گسترده‌ای برای پیش‌بینی ویژگی‌های عناصر و رفتار آن‌ها در واکنش‌های شیمیایی استفاده می‌شود. جدول تناوبی به‌عنوان ابزاری برای درک و سازماندهی اطلاعات شیمیایی ضروری است.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="visual">
+      <h2>تصویرسازی اتم و مولکول</h2>
+      <img src="https://i.pinimg.com/736x/d5/d3/2f/d5d32f3019867f52f9c730373fd43c88.jpg" alt="ساختار اتم" width="200"/>
+      <img src="https://i.pinimg.com/736x/1f/a3/ac/1fa3ac259bd9e6cdb84028ac7c127c01.jpg" alt="مولکول آب" width="200"/>
+    </section>
+
+    <section id="atom3d">
+      <h2>مدل سه‌بعدی ساده اتم</h2>
+      <div class="atom">
+        <div class="nucleus"></div>
+        <div class="orbit orbit1"><div class="electron"></div></div>
+        <div class="orbit orbit2"><div class="electron"></div></div>
+        <div class="orbit orbit3"><div class="electron"></div></div>
+      </div>
+    </section>
+
+    <section id="unit-converter">
+      <h2>مبدل واحدهای شیمی</h2>
+      <div class="card">
+        <label for="valueInput">مقدار:</label>
+        <input type="number" id="valueInput" placeholder="مثلاً 10">
+
+        <label for="molarMassInput">جرم مولکولی (در صورت نیاز):</label>
+        <input type="number" id="molarMassInput" placeholder="مثلاً 18" step="0.01">
+
+        <label for="fromUnit">از:</label>
+        <select id="fromUnit">
+          <option value="gram">گرم</option>
+          <option value="mol">مول</option>
+          <option value="liter">لیتر</option>
+          <option value="particles">تعداد ذره</option>
+        </select>
+
+        <label for="toUnit">به:</label>
+        <select id="toUnit">
+          <option value="gram">گرم</option>
+          <option value="mol">مول</option>
+          <option value="liter">لیتر</option>
+          <option value="particles">تعداد ذره</option>
+        </select>
+
+        <button onclick="convertUnit()">تبدیل کن</button>
+        <p id="conversionResult"></p>
+      </div>
+    </section>
+  </main>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>سایت شیمی</title>
+    <style>
+        body {
+            font-family: 'Vazir', sans-serif;
+            background-color: #ffe6f0;
+            color: #333;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #cc0066;
+        }
+
+        .section {
+            background-color: #fff0f5;
+            border: 1px solid #ff99cc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        button {
+            background-color: #ff66b2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ff99cc;
+            border-radius: 5px;
+        }
+
+        .atom-animation {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .nucleus {
+            width: 20px;
+            height: 20px;
+            background-color: #ff66b2;
+            border-radius: 50%;
+            position: absolute;
+            top: 90px;
+            left: 90px;
+        }
+
+        .electron {
+            width: 10px;
+            height: 10px;
+            background-color: #cc0066;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .orbit1, .orbit2, .orbit3 {
+            border: 1px dashed #ff99cc;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .orbit1 {
+            width: 60px;
+            height: 60px;
+            animation: rotate1 4s linear infinite;
+        }
+
+        .orbit2 {
+            width: 100px;
+            height: 100px;
+            animation: rotate2 6s linear infinite;
+        }
+
+        .orbit3 {
+            width: 140px;
+            height: 140px;
+            animation: rotate3 8s linear infinite;
+        }
+
+        @keyframes rotate1 {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes rotate2 {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes rotate3 {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+  <div class="section" id="exam">
+        <h3>🧪 آزمون شیمی</h3>
+        <p>جرم یک مول آب چقدر است.</p>
+        <button onclick="checkAnswer(this, true)">۱۸ گرم</button>
+        <button onclick="checkAnswer(this, false)">۱۶ گرم</button>
+        <button onclick="checkAnswer(this, false)">۲۰ گرم</button>
+      
+        <p>عدد اتمی عنصر نئون چیست؟</p>
+        <button onclick="checkAnswer(this, true)">۱۰</button>
+        <button onclick="checkAnswer(this, false)">۸</button>
+        <button onclick="checkAnswer(this, false)">۱۲</button>
+      
+        <p>کدام ترکیب زیر یونی است؟</p>
+        <button onclick="checkAnswer(this, true)">NaCl</button>
+        <button onclick="checkAnswer(this, false)">CH₄</button>
+        <button onclick="checkAnswer(this, false)">H₂O</button>
+      
+        <p>حاصل واکنش HCl با NaOH چیست؟</p>
+        <button onclick="checkAnswer(this, true)">NaCl + H₂O</button>
+        <button onclick="checkAnswer(this, false)">H₂ + Cl₂</button>
+        <button onclick="checkAnswer(this, false)">NaOHCl</button>
+    </div>
+  
+    <div class="section atom-animation">
+        <div class="nucleus"></div>
+        <div class="orbit1">
+            <div class="electron" style="top: -5px; left: 25px;"></div>
+        </div>
+        <div class="orbit2">
+            <div class="electron" style="top: -5px; left: 45px;"></div>
+        </div>
+        <div class="orbit3">
+            <div class="electron" style="top: -5px; left: 65px;"></div>
+        </div>
+    </div>
+
+    <script>
+        function convert() {
+            const input = parseFloat(document.getElementById("inputValue").value);
+            const from = document.getElementById("fromUnit").value;
+            const to = document.getElementById("toUnit").value;
+            let result = 0;
+
+            const molarMass = 18; // فرضاً برای آب
+            const avogadro = 6.022e23;
+
+            if (from === to) {
+                result = input;
+            } else if (from === "mol" && to === "g") {
+                result = input * molarMass;
+            } else if (from === "g" && to === "mol") {
+                result = input / molarMass;
+            } else if (from === "mol" && to === "particles") {
+                result = input * avogadro;
+            } else if (from === "particles" && to === "mol") {
+                result = input / avogadro;
+            } else if (from === "mol" && to === "L") {
+                result = input * 22.4;
+            } else if (from === "L" && to === "mol") {
+                result = input / 22.4;
+            } else {
+                result = "تبدیل پشتیبانی نمی‌شود";
+            }
+
+            document.getElementById("result").innerText = `نتیجه: ${result}`;
+        }
+
+        function checkAnswer(button, isCorrect) {
+            if (isCorrect) {
+                button.style.backgroundColor = "#66cc66";
+            } else {
+                button.style.backgroundColor = "#ff6666";
+            }
+        }
+    </script>
+
+  <footer>
+    <p>&copy; ۲۰۲۵ دنیای شیمی | طراحی با ❤️ و صورتی</p>
+  </footer>
+
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 حالت شب</button>
+
+  <script>
+    const toggleDarkMode = () => {
+      document.body.classList.toggle("dark-mode");
+    };
+
+    const revealSections = () => {
+      const sections = document.querySelectorAll("section");
+      sections.forEach(sec => {
+        const top = sec.getBoundingClientRect().top;
+        if (top < window.innerHeight - 100) {
+          sec.classList.add("visible");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", revealSections);
+    window.addEventListener("load", revealSections);
+
+    function convertUnit() {
+      const value = parseFloat(document.getElementById('valueInput').value);
+      const molarMass = parseFloat(document.getElementById('molarMassInput').value);
+      const from = document.getElementById('fromUnit').value;
+      const to = document.getElementById('toUnit').value;
+      const resultBox = document.getElementById('conversionResult');
+
+      const avogadro = 6.022e23;
+      const molToLiter = 22.4;
+
+      if (isNaN(value)) {
+        resultBox.textContent = "لطفاً مقدار معتبری وارد کنید.";
+        return;
+      }
+
+      let mol;
+
+      if (from === "mol") mol = value;
+      else if (from === "gram") {
+        if (isNaN(molarMass) || molarMass <= 0) {
+          resultBox.textContent = "جرم مولکولی معتبر وارد کنید.";
+          return;
+        }
+        mol = value / molarMass;
+      }
+      else if (from === "liter") mol = value / molToLiter;
+      else if (from === "particles") mol = value / avogadro;
+      else {
+        resultBox.textContent = "واحد نامعتبر.";
+        return;
+      }
+
+      let result;
+      if (to === "mol") result = mol;
+      else if (to === "gram") {
+        if (isNaN(molarMass) || molarMass <= 0) {
+          resultBox.textContent = "جرم مولکولی معتبر وارد کنید.";
+          return;
+        }
+        result = mol * molarMass;
+      }
+      else if (to === "liter") result = mol * molToLiter;
+      else if (to === "particles") result = mol * avogadro;
+      else {
+        resultBox.textContent = "واحد هدف نامعتبر است.";
+        return;
+      }
+
+      const fromLabel = document.getElementById('fromUnit').selectedOptions[0].textContent;
+      const toLabel = document.getElementById('toUnit').selectedOptions[0].textContent;
+
+      resultBox.textContent = `${value} ${fromLabel} = ${result.toExponential(3)} ${toLabel}`;
+    }
+  </script>
+</body>
+</html>
